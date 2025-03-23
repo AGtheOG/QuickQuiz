@@ -14,3 +14,9 @@ A fast and intuitive AI-powered quiz generator!
 ## Features
 - Generate quizzes on any topic.
 - Choose difficulty and number of questions.
+
+- ## Coming Soon
+- Info about right and wrong
+
+## Coming Later
+- Full info about the question
