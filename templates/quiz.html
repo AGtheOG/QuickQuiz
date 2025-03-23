@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Your Quiz</title>
+    <link rel="stylesheet" href="/static/quiz-styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Your Quiz</h1>
+        <form id="quizForm">
+            <!-- Questions will be injected by JavaScript -->
+        </form>
+        <button onclick="submitQuiz()">Submit Answers</button>
+        <div class="result" id="result"></div>
+        <a href="/">Create another quiz</a>
+    </div>
+
+
+    <script>
+        const quizData = JSON.parse('{{ quiz | tojson | safe }}');
+    </script>
+
+
+    <script>
+        console.log(quizData);  // Check what's coming from Python!
+        const quizForm = document.getElementById("quizForm");
+        if (!quizData || quizData.error) {
+            quizForm.innerHTML = `<p style="color:red;">${quizData.error || 'Error generating quiz!'}</p>`;
+        } else {
+            quizData.forEach((q, index) => {
+                const questionDiv = document.createElement("div");
+                questionDiv.classList.add("question");
+
+                let optionsHtml = "";
+                q.options.forEach((option, optIndex) => {
+                    const letter = String.fromCharCode(65 + optIndex);
+                    optionsHtml += `
+                        <label>
+                            <input type="radio" name="q${index}" value="${letter}" required>
+                            ${letter}) ${option}
+                        </label><br>
+                    `;
+                });
+
+                questionDiv.innerHTML = `
+                    <h3>Q${index + 1}: ${q.question}</h3>
+                    ${optionsHtml}
+                `;
+
+                quizForm.appendChild(questionDiv);
+            });
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            quizData.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && selected.value === q.correct_answer) {
+                    score++;
+                }
+            });
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = `<h2>Your Score: ${score} / ${quizData.length}</h2>`;
+        }
+    </script>
+</body>
+
+</html>
