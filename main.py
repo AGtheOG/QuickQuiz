@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
+
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -55,6 +56,6 @@ async def generate_quiz(request: Request, topic: str = Form(...), difficulty: st
     except Exception as e:
         print(f"An error occurred: {e}")
         return templates.TemplateResponse("quiz.html", {"request": request, "quiz": {"error": str(e)}})
-    
     # uvicorn main:app --reload
+    
 
